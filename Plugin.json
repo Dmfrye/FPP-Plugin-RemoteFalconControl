@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 const FPP_IP = '192.168.1.102';
-const FPP_BASE = http://${FPP_IP}/api;
+const FPP_BASE = http://192.168.1.102/api;
 const MODEL = 'matrix';
 
 async function pushToFppMatrix(payload) {
