@@ -1,0 +1,59 @@
+{
+"name": "RF-FPP-MatrixBridge",
+"version": "0.1.0",
+"description": "Receive text from Remote Falcon and push to FPP Matrix Tools",
+"entry": "src/index.js"
+}
+
+src/index.js (starter)
+const express = require('express');
+const fetch = require('node-fetch');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+
+const FPP_IP = '192.168.1.102';
+const FPP_BASE = http://${FPP_IP}/api;
+const MODEL = 'matrix';
+
+async function pushToFppMatrix(payload) {
+const url = ${FPP_BASE}/matrix/place_text; // adjust endpoint as needed
+const res = await fetch(url, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(payload)
+});
+return res.ok;
+}
+
+app.post('/falcon-text', async (req, res) => {
+const {
+text = '',
+movement = 'Left',
+speed = 12,
+font = 'Helvetica',
+colors = ['#FF0000', '#FFFFFF']
+} = req.body;
+
+const payload = {
+model: MODEL,
+text,
+movement,
+scroll_speed: speed,
+font,
+color1: colors[0] || '#FF0000',
+color2: colors[1] || '#FFFFFF'
+};
+
+try {
+const ok = await pushToFppMatrix(payload);
+res.json({ status: ok ? 'ok' : 'error' });
+} catch (err) {
+res.status(500).json({ status: 'error', message: err.message });
+}
+});
+
+app.listen(PORT, () => {
+console.log(RF plugin bridge listening on port ${PORT});
+});
